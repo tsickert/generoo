@@ -1,17 +1,14 @@
-# Configuration
+# Template Configuration
 
-Configurations are the driving force behind Generoo's generation.
+Generoo is driven by declarative configurations.
 
-## Template Configuration
+The `template-configuration` file is the core configuration file. It encompasses the following:
 
-The template configuration is the most important configuration. It encompasses the following:
-* any variables that need to be used in the mappings but not taken by the user
-* the prompts that need to be taken from the user in order to fill in the templates
-* the mapping from the template directory to the output directory
+* `variables` that need to be used in the mappings but not taken by the user
+* `prompts` that need to be taken from the user in order to fill in the templates
+* `mappings` from the template directory to the output directory
 
-In pre-existing archetypes, it will always be called `<scope>-template-configuration.json`.
-
-Here is an example of a `project-template-configuration.json` file:
+Below is an example of a `template-configuration.json` file:
 
 ```json
 {
@@ -67,12 +64,12 @@ Here is an example of a `project-template-configuration.json` file:
 }
 ```
 
-### Variables
+## Variables
 
 Prompts are an _optional_ field in the template configuration that allows the user to set values in the configuration 
 that don't require user input. 
 
-### Prompts
+## Prompts
 
 Prompts are an _optional_ field in the template configuration that allows the user to set the inputs that are captured 
 when goal is being run.
@@ -174,7 +171,7 @@ Follow up prompts are prompts with validations. Here's an example of a prompt wi
 }
 ```
 
-### Mappings
+## Mappings
 
 Mappings are an _optional_ field in the template configuration that allows for a custom destination to be set for a template. 
 
@@ -189,13 +186,9 @@ If the mapping is optional, meaning that the user would need to say yes to a pro
 the template, then mustache section syntax may be used. For example:
 
 ```json
-{
-  ...
-  "mappings": {
-    "template": "database/",
-    "destination": "{{#database}}/database/{{database_type}}/{{/database}}"
-  },
-  ...
+"mappings": {
+  "template": "database/",
+  "destination": "{{#database}}/database/{{database_type}}/{{/database}}"
 }
 ```
 
@@ -211,7 +204,7 @@ is *not* standard behavior for `mustache`, so we're breaking the rules a little 
 
 ## Run Configurations
 
-After the first run of this project, a `.generoo` file will be created in the root directory. This `.generator` file
+After the first run of this project, a `.generoo` directory will be created in the root directory. This `.generoo` directory
 will contain configuration files. One of these files is the `run-configuration.json` file. This file contains the inputs
 used when the project was run the first time. When subsequent generator tasks are run, this run configuration will be 
 used to automatically fill out the fields in prompts. 

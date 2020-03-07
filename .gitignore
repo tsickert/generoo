@@ -12,3 +12,5 @@ venv
 /example
 
 *.egg-info
+
+*__pycache__

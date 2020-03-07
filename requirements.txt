@@ -1,3 +1,5 @@
+requests
+wget
 altgraph==0.16.1
 future==0.17.1
 macholib==1.11

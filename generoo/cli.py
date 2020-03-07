@@ -4,14 +4,16 @@ import os
 
 from pick import pick
 
-from generoo.utils import handle_prompt, convert_to_dashes, convert_to_slashes, convert_to_periods, \
-    convert_to_caps_no_spaces, convert_to_caps_with_spaces, render_template_to_directory, render_destination_path, \
-    is_valid_input, equals_ignore_case, convert_to_snake, convert_to_camel, yes_no_to_bool, convert_to_lower_with_spaces
+from generoo.archetype_registry import download_archetype_registry
+from generoo.prompt import handle_prompt
+from generoo.template_config import convert_to_snake, convert_to_dashes, convert_to_slashes, convert_to_periods, \
+    convert_to_lower_with_spaces, convert_to_camel, convert_to_caps_no_spaces, convert_to_caps_with_spaces
+from generoo.utils import render_template_to_directory, render_destination_path, equals_ignore_case, is_valid_input
 
 generate_options = ['generate', 'gen', 'g']
 project_options = ['project', 'proj', 'pro', 'p']
 excluded_archetypal_directories = ['common', '__pycache__']
-archetype_default = f'{os.path.join(os.path.dirname(os.path.realpath(__file__)))}/archetypes'
+archetype_default = f'{os.path.join(os.path.dirname(os.path.realpath(__file__)))}/templates'
 project_template_filename = 'project-template-config.json'
 template_filename = '-template-config.json'
 
@@ -34,7 +36,58 @@ def create_configuration_directory(args: argparse.Namespace, run_configuration: 
     print('Successfully created generoo configuration directory.')
 
 
-def prompt_for_archetype() -> (str, str, str):
+def prompt_for_template_path(directory: str = "templates") -> str:
+    """
+    Begins template path prompt. This will list all of the available child directories in a  parent
+    directory. This process is recursive. 
+    
+    The exit conditions for this prompt are either a:
+    
+        .generoo directory is found
+
+    or
+    
+        template-config.json | template-config.yaml | template-config.yml is found
+
+    or
+
+        directory has no children
+
+    Once the exit condition is met, the path from the directory provided in the function parameter is returned.
+    """
+
+    path = directory
+    exit_conditions = ['.generoo', 'template-config.json', 'template-config.yaml', 'template-config.yml']
+
+    # Check for template-config (should add generation config?)
+
+    # Check for .generoo directory
+
+    # Check for directories
+
+
+def has_template(path: str):
+    template_filenames = ['template-config.json', 'template-config.yaml', 'template-config.yml']
+    
+    files = [f for f in os.listdir(path) if os.path.isfile(f)]
+    if files:
+        for f in files:
+            if f in template_filenames:
+                return True
+    return False
+    
+def has_dot_generoo(path: str):
+    dot_generoo_dir = ".generoo"
+
+    directories = [f.name for f in os.scandir(path) if f.isdir()]
+    if directories:
+        for d in directories:
+            if d == dot_generoo_dir:
+                return True
+    return False
+
+
+def prompt_for_archetype(directory: str) -> (str, str, str):
     """
     Collects information from the user on the language, framework, and framework version they want to generate sources
     from.
@@ -42,35 +95,35 @@ def prompt_for_archetype() -> (str, str, str):
     :return: language, framework, version entered by the user.
     """
 
-    language, _ = pick(get_languages(), "Please choose a language:")
-    framework, _ = pick(get_framework(language), "Please choose a framework:")
-    version, _ = pick(get_versions(language, framework), "Please choose a version:")
+    language, _ = pick(get_languages(directory), "Please choose a language:")
+    framework, _ = pick(get_framework(directory, language), "Please choose a framework:")
+    version, _ = pick(get_versions(directory, language, framework), "Please choose a version:")
     return language, framework, version
 
 
-def get_languages() -> list:
+def get_languages(directory: str) -> list:
     """Traverse templates directory to pull out all of the directories that represent languages. Ignore common.py."""
-    root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archetypes/')
+    root = os.path.join(os.path.dirname(directory), 'templates/')
     return [subdirectory for subdirectory in os.listdir(root) if os.path.isdir(os.path.join(root, subdirectory))
             and subdirectory not in excluded_archetypal_directories]
 
 
-def get_framework(language: str) -> list:
+def get_framework(directory: str, language: str) -> list:
     """
-    Traverse templates/{language} directory to pull out all of the directories that represent archetypes.
+    Traverse templates/{language} directory to pull out all of the directories that represent templates.
     Ignore common.py.
     """
-    root = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'archetypes/{language}')
+    root = os.path.join(os.path.dirname(directory), f'templates/{language}')
     return [subdirectory for subdirectory in os.listdir(root) if os.path.isdir(os.path.join(root, subdirectory))
             and subdirectory not in excluded_archetypal_directories]
 
 
-def get_versions(language: str, framework: str) -> list:
+def get_versions(directory: str, language: str, framework: str) -> list:
     """
     Traverse templates/{language}/{framework} directory to pull out all of the directories that represent versions.
     Ignore common.py.
     """
-    root = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'archetypes/{language}/{framework}')
+    root = os.path.join(os.path.dirname(directory), f'templates/{language}/{framework}')
     return [subdirectory for subdirectory in os.listdir(root) if os.path.isdir(os.path.join(root, subdirectory))
             and subdirectory not in excluded_archetypal_directories]
 
@@ -110,9 +163,12 @@ def get_template_configuration_metadata(args: argparse.Namespace) -> (str, str):
     config = args.template_config
     directory = args.template
     scope = args.scope
+    registry = args.archetype_registry
 
-    if directory == archetype_default:
-        language, framework, version = prompt_for_archetype()
+    if registry is not None:
+        download_archetype_registry(args)
+    elif directory == archetype_default:
+        language, framework, version = prompt_for_archetype(directory)
         directory = f'{directory}/{language}/{framework}/{version}/'
         if not config:
             config = f'{directory}{full_scope_name(scope)}{template_filename}'
@@ -425,7 +481,7 @@ def run(args: argparse.Namespace):
             generate_project(args)
 
 
-def generoo():
+def initialize():
     parser = argparse.ArgumentParser(description='Generate code from templates.')
 
     # Positional Arguments
@@ -449,10 +505,16 @@ def generoo():
     parser.add_argument('-r', '--run-configuration',
                         help='Points to a file on the system that contains a run configuration for a corresponding '
                              'template config')
+    parser.add_argument('--archetype-registry', help='The path to an archetype registry. Archetype registries are '
+                                                     'directories where templates are stored. The folder structure '
+                                                     'should follow the language/framework/version structure that '
+                                                     'the generoo archetype follows.')
+    # parser.add_argument('-u', '--username', help='Username for registry')
+    # parser.add_argument('-p', '--password', help='Password for registry')
 
     arguments = parser.parse_args()
     run(arguments)
 
 
 if __name__ == "__main__":
-    generoo()
+    initialize()

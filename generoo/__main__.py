@@ -1,3 +1,3 @@
-from generoo import generoo
+from .cli import initialize
 
-generoo.generoo()
+initialize()

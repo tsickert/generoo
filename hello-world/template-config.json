@@ -2,7 +2,7 @@
   "prompts": [
     {
       "name": "who",
-      "text": "Say hello to"
+      "text": "Say hello to?"
     }
   ]
 }
