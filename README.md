@@ -11,38 +11,22 @@ For an in-depth look at Generoo and it's use, see the [documentation](https://ge
 
 ## Installation
 
-### PIP
+(WIP)
 
-Install the package from pip:
-
-`pip install generoo`
-
-Run from the module:
-
-`python -m generoo <goal> <scope> <name>`
-
-### Source
-
-Clone the project. Navigate to the directory on your machine.
-
-*Note*: Generoo must be run in Python 3.6 and above.
-
-You can run from the python interpreter by using the following command:
-
-```python generoo.py <goal> <scope> <name>```
-
-## How does it work?
+## How Does it Work?
 
 Generoo is simple. Create a template using [Mustache](https://mustache.github.io/)'s syntax for string replacement.
 
-The template could be a file called `examples/hello-world/hello_world.py` that looks like:
+### Template
 
-```python
-print('Hello, {{who}}')
-```
+A template directory or file that has files with a mustache syntax. Typically, templates will be directories
+with a nested structure. Generoo looks for a `.generoo` directory in templates. This directory should contain a configuration
+file called `generoo.yml`, `generoo.yaml`, or `generoo.json`.
 
-Then, a template configuration file in JSON or YAML defines prompts for the user when they run Generoo. Here's an example
-file called `examples/hello-world/template-config.json`:
+This configuration file contains the instructions that generoo will go through to render the template correctly.
+
+It is possible to provide a custom configuration file, see the [flags]() for more information. Custom configuration files will be added to the `.generoo`
+directory in Generoo outputs. 
 
 ```json
 {
@@ -109,6 +93,48 @@ Positional Arguments (in the order they appear):
 
 If no `--template` or `--template-config` arguments are given, then Generoo will generate from its built-in templates. 
 Check out the `archetypes` directory to see the templates yourself. Or, better yet, try generating one. 
+
+## Registry
+
+Generoo is dependent on templates to work. Because the output is usually a new directory, it's impractical
+to provide a path to a template and/or output directory for each run.
+
+To make life easier, Generoo creates a registry locally that defaults to the home directory (`~/` on linux
+based systems.) 
+
+To create a better user experience, Generoo has a registry feature. 
+
+The registry has two commands: 
+
+`generoo register` 
+
+`generoo link`
+
+### Register
+
+
+The `register` command will copy the target template into the local registry. Then, when
+Generoo is run, it will check the local registry for the template.
+
+If changes occur to the template in its original location, the `register` command will need
+to be called again to update the Generoo registry.
+
+### Link
+
+The `link` command will generate a link to the template location, meaning that each time the
+template is used, it will retrieve the template from its original location, so chages need to
+be recommitted.  
+
+### Usage
+
+Once your template is registered, it can be referenced using the name and version fields in that
+are provided in the Generoo configuration file (link?). 
+
+Example:
+
+```
+generoo generate hello-world@1.0.0
+```
 
 ## Contributing
 

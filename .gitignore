@@ -1,16 +1,6 @@
-build
-dist
-venv
-
 *.iml
+
 .idea
 
-*.pyc
-
-/test-api
-/.generoo
-/example
-
-*.egg-info
-
-*__pycache__
+vendor
+bin

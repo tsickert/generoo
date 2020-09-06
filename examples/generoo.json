@@ -1,0 +1,35 @@
+{
+  "constants": [
+    {
+      "name": "test",
+      "value": "1"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "hibernate",
+      "text": "Do you want to use hibernate with postgres?",
+      "type": "BOOL",
+      "default": "Yes",
+      "validations": [
+        {
+          "type": "REGEX",
+          "value": "someregex"
+        }
+      ],
+      "follow_ups": [
+        {
+          "conditions": [
+            {
+              "value": true
+            }
+          ],
+          "name": "url_flag",
+          "text": "Do you know the JDBC url?",
+          "default": "Yes",
+          "type": "BOOL"
+        }
+      ]
+    }
+  ]
+}
