@@ -1,10 +1,12 @@
 package registry
 
 import (
+	"fmt"
 	"github.com/army-of-one/generoo/pkg/utils"
+	"io/ioutil"
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 const (
@@ -21,7 +23,7 @@ func Register(target string) error {
 
 	registryDir, exists := os.LookupEnv(GenerooRegistryEnvVar)
 	if !exists {
-		registryDir = path.Join(utils.PathFromHome(DefaultRegistry), path.Base(target))
+		registryDir = filepath.Join(utils.PathFromHome(DefaultRegistry), filepath.Base(target))
 	}
 
 	err = utils.Copy(target, registryDir)
@@ -40,4 +42,23 @@ func RegisterLocal() error {
 	}
 
 	return Register(workingDir)
+}
+
+func List() error {
+	var err error
+	var fds []os.FileInfo
+
+	generooDir := utils.PathFromHome(DefaultRegistry)
+
+	if fds, err = ioutil.ReadDir(generooDir); err != nil {
+		return err
+	}
+
+	for _, fd := range fds {
+		if fd.IsDir() {
+			fmt.Print(fd.Name())
+		}
+	}
+
+	return nil
 }

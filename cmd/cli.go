@@ -8,7 +8,6 @@ import (
 	"github.com/army-of-one/generoo/pkg/utils"
 	"github.com/spf13/cobra"
 	"log"
-	"runtime"
 )
 
 func main() {
@@ -34,12 +33,6 @@ func main() {
 		Long:  `validate a generoo configuration file against the json schema for generoo configuration files.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			goos := runtime.GOOS
-			if !(goos == "linux" || goos == "darwin") {
-				log.Printf("sorry, the 'register' command is not a supported on the %s platform for this feature yet\n", goos)
-				return
-			}
-
 			var err error
 
 			if len(args) == 1 {
@@ -65,10 +58,8 @@ func main() {
 		Long:  `validate a generoo configuration file against the json schema for generoo configuration files.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			os := runtime.GOOS
-			if !(os == "linux" || os == "darwin") {
-				log.Printf("sorry, the 'list' command is not a supported on the %s platform for this feature yet\n", os)
-				return
+			if err := registry.List(); err != nil {
+				fmt.Println("Failed to list registered Generoo templates.")
 			}
 		},
 	}

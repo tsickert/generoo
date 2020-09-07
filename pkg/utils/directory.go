@@ -6,10 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 	"os/user"
-	"path"
+	"path/filepath"
 )
 
 // Dir copies a whole directory recursively
+// TODO: handle ignores?
 func Copy(src string, dst string) error {
 	var err error
 	var fds []os.FileInfo
@@ -27,8 +28,8 @@ func Copy(src string, dst string) error {
 		return err
 	}
 	for _, fd := range fds {
-		srcfp := path.Join(src, fd.Name())
-		dstfp := path.Join(dst, fd.Name())
+		srcfp := filepath.Join(src, fd.Name())
+		dstfp := filepath.Join(dst, fd.Name())
 
 		if fd.IsDir() {
 			if err = Copy(srcfp, dstfp); err != nil {
@@ -75,5 +76,5 @@ func PathFromHome(subPath string) string {
 		panic(err)
 	}
 
-	return path.Join(usr.HomeDir, subPath)
+	return filepath.Join(usr.HomeDir, subPath)
 }

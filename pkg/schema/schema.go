@@ -10,11 +10,13 @@ func getSchemaBytes() []byte {
   "description": "The configuration schema for generoo generation. This file is used to define the flow of Generoo template rendering.",
 
   "type": "object",
+  "required": [
+	"version"
+  ],
   "properties": {
 	"version": { "$ref": "#/$defs/version" },
-	"id": { "$ref": "#/$defs/id" },
 	"name": { "$ref": "#/$defs/name" },
-	"name": { "$ref": "#/$defs/description" },
+	"description": { "$ref": "#/$defs/description" },
     "constants": {
       "type": "array",
       "title": "The inputs schema",
@@ -62,6 +64,15 @@ func getSchemaBytes() []byte {
         "text": { "$ref": "#/$defs/text" },
         "type": { "$ref": "#/$defs/type" },
         "default": { "$ref": "#/$defs/default" },
+		"options": {
+          "type": "array",
+          "title": "The options schema",
+          "description": "List of valid options that the user can pick from.",
+          "default": [],
+          "items": { 
+			"type": "string"
+		  }
+        },
         "validations": {
           "type": "array",
           "title": "The validations schema",
@@ -121,7 +132,13 @@ func getSchemaBytes() []byte {
       "type": "string",
       "title": "The value schema",
       "description": "The value against which the validation takes place."
-    }
+    },
+	"version": {
+	  "type": "string",
+	  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+ 	  "title": "The version schema",
+	  "description": "Semantic version of the template."
+	}
   }
 }
 	`)
