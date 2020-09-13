@@ -11,14 +11,15 @@ import (
 
 const (
 	DefaultRegistry       = ".generoo/registry"
+	RegistryLinkManifest  = ".generoo/registry/links.yml"
 	GenerooRegistryEnvVar = "GENEROO_REGISTRY"
 )
 
-func Register(target string) error {
+func Register(target string) (string, error) {
 	isGeneroo, err := utils.HasGenerooDir(target)
 	if err != nil || !isGeneroo {
 		log.Fatalf("could not find a .generoo directory: %s", err)
-		return err
+		return "", err
 	}
 
 	registryDir, exists := os.LookupEnv(GenerooRegistryEnvVar)
@@ -31,7 +32,7 @@ func Register(target string) error {
 		log.Fatalf("failed to register %s", target)
 	}
 
-	return nil
+	return filepath.Base(target), nil
 }
 
 func RegisterLocal() error {
@@ -42,6 +43,41 @@ func RegisterLocal() error {
 	}
 
 	return Register(workingDir)
+}
+
+// Link leverages OS level symlinks to point to an existing directory
+// Note: this is an experimental feature
+func Link(target string) error {
+	isGeneroo, err := utils.HasGenerooDir(target)
+	if err != nil || !isGeneroo {
+		log.Fatalf("could not find a .generoo directory: %s", err)
+		return err
+	}
+
+	alias := filepath.Base(target)
+
+	if alias == "." {
+		err = LinkLocal()
+	}
+
+	newLink, exists := os.LookupEnv(GenerooRegistryEnvVar)
+	if !exists {
+		newLink = filepath.Join(utils.PathFromHome(DefaultRegistry), RegistryLinkManifest, filepath.Base(target))
+	}
+
+	err = os.Link(target, newLink)
+
+	return nil
+}
+
+func LinkLocal() error {
+	workingDir, err := os.Getwd()
+
+	if err != nil {
+		log.Fatal("failed to get the current working directory")
+	}
+
+	return Link(workingDir)
 }
 
 func List() error {

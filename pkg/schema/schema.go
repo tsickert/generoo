@@ -71,6 +71,15 @@ func getSchemaBytes() []byte {
           "default": [],
           "items": { 
 			"type": "string"
+		  },
+		},
+		"transformations": {
+          "type": "array",
+          "title": "The options schema",
+          "description": "List of valid options that the user can pick from.",
+          "default": [],
+          "items": { 
+			"type": "string"
 		  }
         },
         "validations": {
@@ -92,7 +101,7 @@ func getSchemaBytes() []byte {
 
     "validation": {
       "type": "object",
-      "title": "The first anyOf schema",
+      "title": "The validation schema",
       "description": "Validations are checked before rendering occurs to make sure valid inputs are provided.",
       "default": {},
       "required": [
@@ -104,6 +113,20 @@ func getSchemaBytes() []byte {
         "value": { "$ref": "#/$defs/value" }
       }
     },
+
+	"transformation": {
+	  "type": "object",
+	  "title": "The transformations schema",
+	  "description": "Default string transformations so that users don't have to reenter it.",
+	  "default": {},
+      "required": [
+
+	  ],
+	  "properties": {
+        "name": { "$ref": "#/$defs/name" },
+		"format": { "$ref": "#/$defs/format" }
+	  }
+	}
 
     "name": {
       "type": "string",
@@ -138,7 +161,14 @@ func getSchemaBytes() []byte {
 	  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
  	  "title": "The version schema",
 	  "description": "Semantic version of the template."
+	},
+	"format": {
+	  "type": "string",
+	  "enum": [ "United States of America" ],
+ 	  "title": "The format schema",
+	  "description": "Transformation format."
 	}
+
   }
 }
 	`)
