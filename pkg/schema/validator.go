@@ -3,8 +3,8 @@ package schema
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/qri-io/jsonschema"
-	"log"
 )
 
 type Validator struct {
@@ -18,7 +18,8 @@ func NewValidator() *Validator {
 	v.schema = &jsonschema.Schema{}
 
 	if err := json.Unmarshal(getSchemaBytes(), v.schema); err != nil {
-		log.Fatalf("failed to unmarshal schema: %s", err)
+		fmt.Println("The Generoo configuration schema cannot be read. Please add an issue in the Generoo repository " +
+			"here: https://github.com/army-of-one/generoo/issues. Thanks, and sorry for the inconvenience.")
 	}
 
 	v.context = context.Background()

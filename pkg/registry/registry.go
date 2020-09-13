@@ -35,7 +35,7 @@ func Register(target string) (string, error) {
 	return filepath.Base(target), nil
 }
 
-func RegisterLocal() error {
+func RegisterLocal() (string, error) {
 	workingDir, err := os.Getwd()
 
 	if err != nil {
@@ -80,14 +80,14 @@ func LinkLocal() error {
 	return Link(workingDir)
 }
 
-func List() error {
+func List() {
 	var err error
 	var fds []os.FileInfo
 
 	generooDir := utils.PathFromHome(DefaultRegistry)
 
 	if fds, err = ioutil.ReadDir(generooDir); err != nil {
-		return err
+		return
 	}
 
 	for _, fd := range fds {
@@ -95,6 +95,4 @@ func List() error {
 			fmt.Print(fd.Name())
 		}
 	}
-
-	return nil
 }

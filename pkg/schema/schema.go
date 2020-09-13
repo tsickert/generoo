@@ -5,18 +5,19 @@ func getSchemaBytes() []byte {
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "http://generoo.armyofone.tech/schema.json",
-
   "title": "Generoo Configuration File Schema",
   "description": "The configuration schema for generoo generation. This file is used to define the flow of Generoo template rendering.",
-
   "type": "object",
-  "required": [
-	"version"
-  ],
   "properties": {
-	"version": { "$ref": "#/$defs/version" },
-	"name": { "$ref": "#/$defs/name" },
-	"description": { "$ref": "#/$defs/description" },
+    "version": {
+      "$ref": "#/$defs/version"
+    },
+    "name": {
+      "$ref": "#/$defs/name"
+    },
+    "description": {
+      "$ref": "#/$defs/description"
+    },
     "constants": {
       "type": "array",
       "title": "The inputs schema",
@@ -36,15 +37,18 @@ func getSchemaBytes() []byte {
       }
     }
   },
-
   "$defs": {
     "constant": {
       "type": "object",
       "title": "The name schema",
       "description": "An input to be rendered that does not need to be taken from the user.",
       "properties": {
-        "name": { "$ref": "#/$defs/name" },
-        "value": { "$ref": "#/$defs/value" }
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "value": {
+          "$ref": "#/$defs/value"
+        }
       },
       "required": [
         "name",
@@ -60,45 +64,56 @@ func getSchemaBytes() []byte {
         "type"
       ],
       "properties": {
-        "name": { "$ref": "#/$defs/name" },
-        "text": { "$ref": "#/$defs/text" },
-        "type": { "$ref": "#/$defs/type" },
-        "default": { "$ref": "#/$defs/default" },
-		"options": {
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "type": {
+          "$ref": "#/$defs/type"
+        },
+        "default": {
+          "$ref": "#/$defs/default"
+        },
+        "options": {
           "type": "array",
           "title": "The options schema",
           "description": "List of valid options that the user can pick from.",
           "default": [],
-          "items": { 
-			"type": "string"
-		  },
-		},
-		"transformations": {
+          "items": {
+            "type": "string"
+          }
+        },
+        "transformations": {
           "type": "array",
           "title": "The options schema",
           "description": "List of valid options that the user can pick from.",
           "default": [],
-          "items": { 
-			"type": "string"
-		  }
+          "items": {
+            "type": "string"
+          }
         },
         "validations": {
           "type": "array",
           "title": "The validations schema",
           "description": "List of validations to perform on the user input.",
           "default": [],
-          "items": { "$ref": "#/$defs/validation" }
+          "items": {
+            "$ref": "#/$defs/validation"
+          }
         },
         "follow_ups": {
           "type": "array",
           "title": "The follow_ups schema",
           "description": "Inputs that become required based on the user input.",
           "default": [],
-          "items": { "$ref": "#/$defs/input" }
+          "items": {
+            "$ref": "#/$defs/input"
+          }
         }
       }
     },
-
     "validation": {
       "type": "object",
       "title": "The validation schema",
@@ -109,25 +124,29 @@ func getSchemaBytes() []byte {
         "value"
       ],
       "properties": {
-        "type": { "$ref": "#/$defs/type" },
-        "value": { "$ref": "#/$defs/value" }
+        "type": {
+          "$ref": "#/$defs/type"
+        },
+        "value": {
+          "$ref": "#/$defs/value"
+        }
       }
     },
-
-	"transformation": {
-	  "type": "object",
-	  "title": "The transformations schema",
-	  "description": "Default string transformations so that users don't have to reenter it.",
-	  "default": {},
-      "required": [
-
-	  ],
-	  "properties": {
-        "name": { "$ref": "#/$defs/name" },
-		"format": { "$ref": "#/$defs/format" }
-	  }
-	}
-
+    "transformation": {
+      "type": "object",
+      "title": "The transformations schema",
+      "description": "Default string transformations so that users don't have to reenter it.",
+      "default": {},
+      "required": [],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "format": {
+          "$ref": "#/$defs/format"
+        }
+      }
+    },
     "name": {
       "type": "string",
       "title": "The name schema",
@@ -156,19 +175,25 @@ func getSchemaBytes() []byte {
       "title": "The value schema",
       "description": "The value against which the validation takes place."
     },
-	"version": {
-	  "type": "string",
-	  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
- 	  "title": "The version schema",
-	  "description": "Semantic version of the template."
-	},
-	"format": {
-	  "type": "string",
-	  "enum": [ "United States of America" ],
- 	  "title": "The format schema",
-	  "description": "Transformation format."
-	}
-
+    "version": {
+      "type": "string",
+      "title": "The version schema",
+      "description": "Semantic version of the template.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "United States of America"
+      ],
+      "title": "The format schema",
+      "description": "Transformation format."
+    },
+    "description": {
+      "type": "string",
+      "title": "The description schema",
+      "description": "The description of an input. This could be used as a reference later."
+    }
   }
 }
 	`)

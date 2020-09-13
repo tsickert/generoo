@@ -1,7 +1,6 @@
 package command
 
 import (
-	"errors"
 	"fmt"
 	"github.com/army-of-one/generoo/pkg/registry"
 	"github.com/spf13/cobra"
@@ -16,12 +15,14 @@ var Register = &cobra.Command{
 		var err error
 		var name string
 
+		_ = cmd.Help()
+
 		if len(args) == 1 {
 			name, err = registry.Register(args[0])
 		} else if len(args) == 0 {
-			err = registry.RegisterLocal()
+			name, err = registry.RegisterLocal()
 		} else {
-			err = errors.New("usage: Generoo register [directory]")
+			_ = cmd.Help()
 		}
 
 		if err != nil {

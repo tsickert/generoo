@@ -21,21 +21,22 @@ func validate(cmd *cobra.Command, args []string) {
 	rawData, err := utils.ReadAmbiguousAsJson(args[0])
 
 	if err != nil {
-		fmt.Printf("Error: could not read %s", args[1])
+		fmt.Printf("Could not read provided file or directory")
 		return
 	}
 
 	issues, err := validator.Validate(rawData)
 
 	if err != nil {
-		fmt.Printf("There were validation failures: %s", err)
+		fmt.Printf("Generoo failed during pre-validation steps. Please add an issue in the Generoo repository " +
+			"here: https://github.com/army-of-one/generoo/issues. Thanks, and sorry for the inconvenience.")
 	} else {
 		if len(issues) < 1 {
 			fmt.Println("Provided configuration is valid.")
 		} else {
 			var failureMsg string
 			for _, err := range issues {
-				failureMsg = fmt.Sprintf("%s\n%s", failureMsg, err.Message)
+				failureMsg = fmt.Sprintf("%s\nError at %s: %s", failureMsg, err.PropertyPath, err.Message)
 			}
 			fmt.Println(failureMsg)
 		}
